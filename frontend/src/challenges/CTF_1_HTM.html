@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Login</title>
+</head>
+
+<body>
+    <h1>Secret Login</h1>
+	<script>function displayText() {
+  var text = document.getElementById("textField");
+  text.style.display = "block";
+}
+</script>
+	Do you need a <button onclick="displayText()">Hint?</button>
+	
+
+<div id="textField" style="display: none;">
+"Decode the hidden string, admin holds the key."</div>
+<hr>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <p id="message"></p>
+	<p style="display:none;">
+	I am the most common username used
+	</p>
+	
+    <p id="encodedSecret" style="display: none;">
+        VGhlIHNlY3JldCBwYXNzd29yZCBpczogY3RmX21hc3Rlcg==
+    </p>
+    <script>
+        const flagParts = [
+            'Q1RG', 'e2gxZ', 'GQzbl9z', 'M2NyM3', 'Q1XzRyM', 'l9mdW5', '9'
+        ];
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const encodedSecret = document.getElementById('encodedSecret').textContent.trim();
+            const decodedSecret = atob(encodedSecret);
+            const secretPassword = decodedSecret.split(': ')[1];
+            
+            if (username === 'admin' && password === secretPassword) {
+                const flag = atob(flagParts.join(''));
+                document.getElementById('message').textContent = 'Login successful! Here\'s your flag: ' + flag;
+            } else {
+                document.getElementById('message').textContent = 'Invalid credentials!';
+            }
+        });
+    </script>
+</body>
+</html>
