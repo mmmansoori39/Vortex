@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { useNavigate, useParams } from "react-router-dom";
 import Input from "../components/Input";
 import { Lock } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "../components/Toast";
 
 const ResetPasswordPage = () => {
 	const [password, setPassword] = useState("");
@@ -18,12 +18,11 @@ const ResetPasswordPage = () => {
 		e.preventDefault();
 
 		if (password !== confirmPassword) {
-			alert("Passwords do not match");
+			toast.error("Passwords do not match");
 			return;
 		}
 		try {
 			await resetPassword(token, password);
-
 			toast.success("Password reset successfully, redirecting to login page...");
 			setTimeout(() => {
 				navigate("/login");
@@ -35,16 +34,16 @@ const ResetPasswordPage = () => {
 	};
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-			className='max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden'
-		>
-			<div className='p-8'>
-				<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text'>
+		<div className='min-h-screen flex items-center justify-center bg-[#020d19]'>
+			<div className='max-w-md w-full bg-[#0b1b29] rounded-lg shadow-lg p-8 border border-[#ff9800]'>
+				<motion.h2
+					initial={{ opacity: 0, y: -50 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+					className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#ff9800] to-[#f9b34c] text-transparent bg-clip-text'
+				>
 					Reset Password
-				</h2>
+				</motion.h2>
 				{error && <p className='text-red-500 text-sm mb-4'>{error}</p>}
 				{message && <p className='text-green-500 text-sm mb-4'>{message}</p>}
 
@@ -56,6 +55,7 @@ const ResetPasswordPage = () => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						required
+						className='bg-[#141414] text-[#f0f0f0] border-2 border-[#ff9800] focus:border-[#f9b34c] focus:outline-none mb-4'
 					/>
 
 					<Input
@@ -65,12 +65,13 @@ const ResetPasswordPage = () => {
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						required
+						className='bg-[#141414] text-[#f0f0f0] border-2 border-[#ff9800] focus:border-[#f9b34c] focus:outline-none mb-4'
 					/>
 
 					<motion.button
 						whileHover={{ scale: 1.02 }}
 						whileTap={{ scale: 0.98 }}
-						className='w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200'
+						className='w-full py-3 px-4 bg-gradient-to-r from-[#ff9800] to-[#f9b34c] text-[#0b1b29] font-bold rounded-lg shadow-lg hover:bg-[#f9b34c] focus:outline-none focus:ring-2 focus:ring-[#ff9800] focus:ring-offset-2 focus:ring-offset-[#020d19] transition duration-200'
 						type='submit'
 						disabled={isLoading}
 					>
@@ -78,7 +79,8 @@ const ResetPasswordPage = () => {
 					</motion.button>
 				</form>
 			</div>
-		</motion.div>
+		</div>
 	);
 };
+
 export default ResetPasswordPage;

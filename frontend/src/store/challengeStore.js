@@ -10,47 +10,47 @@ axios.defaults.withCredentials = true;
 
 export const useChallengeStore = create((set) => ({
   challenges: [],
+  challengesAll: [],
   challenge: null,
+  codeContent: null,
+  fileType: null,
   isAuthenticated: false,
   error: null,
   isLoading: false,
   message: null,
 
-  // CREATE Challenge
   createChallenge: async (challengeData) => {
     set({ isLoading: true, error: null });
     try {
-      const formData = new FormData();
-      formData.append("name", challengeData.name);
-      formData.append("skills", challengeData.skills);
-      formData.append("difficulty", challengeData.difficulty);
-      formData.append("codeFile", challengeData.codeFile);
-
-      const response = await axios.post(`${API_URL}/upload`, formData, {
+      const response = await axios.post(`${API_URL}/upload`, challengeData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       set({
-        challenges: [...useChallengeStore.getState().challenges, response.data],
+        challengesAll: [...useChallengeStore.getState().challengesAll, response.data],
         isLoading: false,
         error: null,
+        message: response.data.message
       });
+
+      return response.data.message
     } catch (error) {
+      const errorMessage = error.response?.data?.message || "Error creating challenge"
       set({
-        error: error.response?.data?.message || "Error creating challenge",
+        error: errorMessage,
         isLoading: false,
       });
-      throw error;
+      throw errorMessage;
     }
-  },
+  },  
 
   // FETCH All Challenges
   fetchAllChallenges: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/all`);
+      const response = await axios.get(`${API_URL}/`);
       set({
-        challenges: response.data,
+        challengesAll: response.data,
         isAuthenticated: true,
         error: null,
         isLoading: false,
@@ -69,11 +69,15 @@ export const useChallengeStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axios.get(`${API_URL}/${id}`);
+  
       set({
-        challenge: response.data, // Store the specific challenge in state
+        challenges: response.data.challenge,
         isLoading: false,
         error: null,
+        codeContent: response.data.codeContent,
+        fileType: response.data.fileType
       });
+
     } catch (error) {
       set({
         error: error.response?.data?.message || "Error fetching challenge",
@@ -122,22 +126,22 @@ export const useChallengeStore = create((set) => ({
   deleteChallenge: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_URL}/delete/${id}`);
+      const response = await axios.delete(`${API_URL}/${id}`);
 
       // Remove the deleted challenge from the state
       const updatedChallenges = useChallengeStore
         .getState()
-        .challenges.filter((challenge) => challenge._id !== id);
+        .challengesAll.filter((challenge) => challenge._id !== id);
 
       set({
-        challenges: updatedChallenges,
+        challengesAll: updatedChallenges,
         isLoading: false,
         error: null,
-        message: "Challenge deleted successfully!",
+        message: response?.data?.message,
       });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Error deleting challenge",
+        error: error?.response?.data?.message || "Error deleting challenge",
         isLoading: false,
       });
       throw error;

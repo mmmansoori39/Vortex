@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Defense</title>
+</head>
+<body>
+    <h1>SQL Injection Defense</h1>
+    <p>Identify the SQL injection vulnerability in the following code:</p>
+    
+    <pre><code>
+        // Vulnerable Code
+        const username = req.body.username;
+        const password = req.body.password;
+        
+        const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+        db.query(query, (err, results) => {
+            // Login logic
+        });
+    </code></pre>
+    
+    <p>How can you fix this vulnerability? Provide a secure code snippet below:</p>
+    
+    <form id="sqlForm">
+        <label for="secureCode">Your Secure Code:</label>
+        <textarea id="secureCode" name="secureCode" rows="4" required></textarea>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <p id="message"></p>
+    
+    <script>
+        document.getElementById('sqlForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const secureCode = document.getElementById('secureCode').value;
+            
+            // Placeholder for secure code check (in real implementation, you would compare to a known good example)
+            const correctSecureCode = `
+                const username = req.body.username;
+                const password = req.body.password;
+                
+                const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+                db.query(query, [username, password], (err, results) => {
+                    // Login logic
+                });
+            `;
+            
+            if (secureCode.trim() === correctSecureCode.trim()) {
+                document.getElementById('message').textContent = 'Correct! You have secured the code.';
+            } else {
+                document.getElementById('message').textContent = 'Incorrect, try again!';
+            }
+        });
+    </script>
+</body>
+</html>

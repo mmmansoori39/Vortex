@@ -104,18 +104,27 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      res.status(400).json({
+    if(!email || !password){
+      return res.status(400).json({
         success: false,
-        message: "invalid credentials",
+        message: "All fields are required"
+      })
+    }
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
     }
+    
     const isPasswordValid = await bcryptjs.compare(password, user.password);
+    
     if (!isPasswordValid) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
-        message: "invalid credentials",
+        message: "Invalid credentials",
       });
     }
 
@@ -124,7 +133,7 @@ export const login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Logged in successfully",
       user: {
@@ -133,21 +142,22 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
 
+
 export const logout = async (req, res) => {
   try {
     console.log("logout")
-    res.clearCookie("auth-token");
+    res.clearCookie("auth_token");
     res.status(200).json({
       success: true,
       message: "Logged out successfully",
-    });
+    }); 
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -158,11 +168,18 @@ export const logout = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email)
   try {
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill your email",
+      });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "User not found",
       });

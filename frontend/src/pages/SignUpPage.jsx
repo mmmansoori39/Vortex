@@ -1,10 +1,11 @@
-import { motion } from "framer-motion";
 import Input from "../components/Input";
 import { Loader, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useAuthStore } from "../store/authStore";
+import { toast } from "../components/Toast";
+import { motion } from "framer-motion";
 
 const SignUpPage = () => {
 	const [name, setName] = useState("");
@@ -13,86 +14,90 @@ const SignUpPage = () => {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 
-	const { signup, error, isLoading } = useAuthStore();
+	const { signup, isLoading } = useAuthStore();
 
 	const handleSignUp = async (e) => {
 		e.preventDefault();
 
 		try {
-			await signup(name, userName, email, password);
+			const responseMsg = await signup(name, userName, email, password);
+			toast.success(responseMsg)
 			navigate("/verify-email");
 		} catch (error) {
-			console.log(error);
+			toast.error(error)
 		}
 	};
+
 	return (
-		<div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-			className='max-w-md w-full bg-gray-800 bg-opacity-20 backdrop-filter backdrop-blur-md rounded-2xl shadow-xl 
-			overflow-hidden'
-		>
-			<div className='p-8'>
-				<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text'>
+		<div className=" lg:w-3/4 flex items-center justify-center bg-[#020d19] mt-4">
+			<div className="bg-[#0b1b29] rounded-lg shadow-lg py-4 px-8 w-full max-w-md border border-[#ff9800]">
+				<h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#ff9800] to-[#f9b34c] text-transparent bg-clip-text">
 					Create Account
 				</h2>
 
 				<form onSubmit={handleSignUp}>
 					<Input
 						icon={User}
-						type='text'
-						placeholder='Full Name'
+						iconColor="#ff9800"  // Set icon color to orange
+						type="text"
+						placeholder="Full Name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						className="border rounded w-full p-2 bg-[#020d19] text-[#f0f0f0] border-[#ff9800] focus:border-[#f9b34c] outline-none"
 					/>
 					<Input
 						icon={User}
-						type='text'
-						placeholder='UserName'
+						iconColor="#ff9800" 
+						type="text"
+						placeholder="UserName"
 						value={userName}
 						onChange={(e) => setUserName(e.target.value)}
+						className="border rounded w-full p-2 bg-[#020d19] text-[#f0f0f0] border-[#ff9800] focus:border-[#f9b34c] outline-none"
 					/>
 					<Input
 						icon={Mail}
-						type='email'
-						placeholder='Email Address'
+						iconColor="#ff9800" 
+						type="email"
+						placeholder="Email Address"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
+						className="border rounded w-full p-2 bg-[#020d19] text-[#f0f0f0] border-[#ff9800] focus:border-[#f9b34c] outline-none"
 					/>
 					<Input
 						icon={Lock}
-						type='password'
-						placeholder='Password'
+						iconColor="#ff9800" 
+						type="password"
+						placeholder="Password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
+						className="border rounded w-full p-2 bg-[#020d19] text-[#f0f0f0] border-[#ff9800] focus:border-[#f9b34c] outline-none"
 					/>
-					{error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
 					<PasswordStrengthMeter password={password} />
 
-					<button
-						className='mt-5 w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white 
-						font-bold rounded-lg shadow-lg hover:from-green-600
-						hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
-						 focus:ring-offset-gray-900 transition duration-200'
+					<motion.button
+						className="mt-5 w-full py-3 px-4 bg-[#ff9800] text-[#0b1b29] 
+						font-bold rounded-lg shadow-lg hover:bg-[#f9b34c] focus:outline-none 
+						focus:ring-2 focus:ring-[#ff9800] focus:ring-offset-2
+						focus:ring-offset-[#0b1b29] transition duration-200"
 						whileHover={{ scale: 1.02 }}
 						whileTap={{ scale: 0.98 }}
-						type='submit'
+						type="submit"
 						disabled={isLoading}
 					>
-						{isLoading ? <Loader className=' animate-spin mx-auto' size={24} /> : "Sign Up"}
-					</button>
+						{isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : "Sign Up"}
+					</motion.button>
 				</form>
-			</div>
-			<div className='px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center'>
-				<p className='text-sm text-gray-400'>
+				<div className="px-8 bg-[#0b1b29] bg-opacity-50 flex justify-center mt-2 rounded-lg">
+				<p className="text-sm text-[#f0f0f0]">
 					Already have an account?{" "}
-					<Link to={"/login"} className='text-green-400 hover:underline'>
+					<Link to="/login" className="text-[#ff9800] hover:underline">
 						Login
 					</Link>
 				</p>
 			</div>
+			</div>
 		</div>
 	);
 };
+
 export default SignUpPage;

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Breaker</title>
+</head>
+<body>
+    <h1>Python Code Breaker</h1>
+    <p>Debug the following Python code snippet:</p>
+    
+    <pre><code>
+def add_numbers(a, b):
+    result = a + b
+    print("The sum is: ", result)
+
+add_numbers(5, '10')
+    </code></pre>
+    
+    <p>What is the correct output? Provide your fixed code below:</p>
+    
+    <form id="pythonForm">
+        <label for="fixedCode">Your Fixed Code:</label>
+        <textarea id="fixedCode" name="fixedCode" rows="4" required></textarea>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <p id="message"></p>
+    
+    <script>
+        document.getElementById('pythonForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fixedCode = document.getElementById('fixedCode').value;
+            
+            // Placeholder for fixed code check
+            const correctFixedCode = `
+def add_numbers(a, b):
+    result = a + int(b)
+    print("The sum is: ", result)
+
+add_numbers(5, 10)
+            `;
+            
+            if (fixedCode.trim() === correctFixedCode.trim()) {
+                document.getElementById('message').textContent = 'Correct! The code is now fixed.';
+            } else {
+                document.getElementById('message').textContent = 'Incorrect, try again!';
+            }
+        });
+    </script>
+</body>
+</html>

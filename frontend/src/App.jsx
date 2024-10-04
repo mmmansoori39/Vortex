@@ -5,7 +5,6 @@ import EmailVerificationPage from "./pages/EmailVerificationPage";
 import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
@@ -17,6 +16,7 @@ import ContactUsPage from "./pages/ContactUsPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ChallengeDetailPage from "./pages/ChallengeDetailPage";
 import ChallengeForm from "./components/ChallengeForm";
+import { ToastContainer } from "./components/Toast";
 
 // Protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -60,7 +60,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br flex  justify-center relative overflow-hidden">
-      <Navbar />
       <Routes location={location}>
         <Route path="/about" element={<AboutUsPage />} />
         <Route path="/contact" element={<ContactUsPage />} />
@@ -68,6 +67,7 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
+              <Navbar />
               <DashboardPage />
             </ProtectedRoute>
           }
@@ -76,6 +76,7 @@ function App() {
           path="/blog"
           element={
             <ProtectedRoute>
+              <Navbar />
               <BlogList />
             </ProtectedRoute>
           }
@@ -84,6 +85,7 @@ function App() {
           path="/blog/:id"
           element={
             <ProtectedRoute>
+              <Navbar />
               <BlogDetail />
             </ProtectedRoute>
           }
@@ -92,6 +94,7 @@ function App() {
           path="/edit/:id"
           element={
             <ProtectedRoute>
+              <Navbar />
               <BlogForm />
             </ProtectedRoute>
           }
@@ -100,6 +103,7 @@ function App() {
           path="/create/blog"
           element={
             <ProtectedRoute>
+              <Navbar />
               <BlogForm />
             </ProtectedRoute>
           }
@@ -108,6 +112,7 @@ function App() {
           path="/ctf"
           element={
             <ProtectedRoute>
+              <Navbar />
               <ChallengesPage />
             </ProtectedRoute>
           }
@@ -116,6 +121,7 @@ function App() {
           path="/addCTF"
           element={
             <ProtectedRoute>
+              <Navbar />
               <ChallengeForm />
             </ProtectedRoute>
           }
@@ -124,6 +130,7 @@ function App() {
           path="/ctf/:id"
           element={
             <ProtectedRoute>
+              <Navbar />
               <ChallengeDetailPage />
             </ProtectedRoute>
           }
@@ -164,7 +171,7 @@ function App() {
         {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <Toaster />
+      <ToastContainer />
     </div>
   );
 }

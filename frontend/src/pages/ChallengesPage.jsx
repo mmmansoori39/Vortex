@@ -1,40 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useChallengeStore } from "../store/challengeStore";
+import { toast } from "../components/Toast";
 
-const challengesData = [
-  {
-    id: "1",
-    difficulty: "Trivial",
-    name: "A little something to get you started",
-    skills: "Web",
-    completion: "0 / 1",
-  },
-  {
-    id: "2",
-    difficulty: "Easy",
-    name: "Encrypted Pastebin",
-    skills: "Web",
-    completion: "0 / 4",
-  },
-  {
-    id: "3",
-    difficulty: "Hard",
-    name: "Photo Gallery",
-    skills: "Web",
-    completion: "0 / 3",
-  },
-  {
-    id: "4",
-    difficulty: "Moderate",
-    name: "Postbook",
-    skills: "Crypto",
-    completion: "0 / 4",
-  },
-];
+const completion = "0 / 4";
 
 const ChallengesPage = () => {
-  const userScore = 75; 
-  const progress = 55; 
+  const {
+    challengesAll,
+    fetchAllChallenges,
+    isLoading,
+    error,
+    deleteChallenge,
+    message,
+  } = useChallengeStore();
+
+  const deleteChallengeHere = async (id) => {
+    try {
+      await deleteChallenge(id)
+      toast.success(message)
+    } catch (_) {
+      toast.error(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAllChallenges();
+  }, [fetchAllChallenges]);
+
+  const userScore = 75;
+  const progress = 55;
 
   return (
     <div className="min-h-screen bg-[#0b1b29] text-white p-4 mt-24 rounded-lg">
@@ -73,7 +68,7 @@ const ChallengesPage = () => {
             </tr>
           </thead>
           <tbody>
-            {challengesData.map((challenge, index) => (
+            {challengesAll.map((challenge, index) => (
               <tr key={index} className="border-b border-gray-700">
                 <td className="py-4 px-4 text-sm text-gray-400">
                   {challenge.difficulty}
@@ -82,14 +77,16 @@ const ChallengesPage = () => {
                   {challenge.name}
                 </td>
                 <td className="py-4 px-4 text-sm text-gray-400">
-                  {challenge.skills}
+                  {challenge.skills?.map((item, i) => (
+                    <span key={i}>{item} </span>
+                  ))}
                 </td>
                 <td className="py-4 px-4 text-sm text-gray-400">
-                  {challenge.completion}
+                  {completion}
                 </td>
                 <td className="py-4 px-4 text-sm text-gray-400 ">
                   <Link
-                    to={`${challenge.id}`}
+                    to={`${challenge._id}`}
                     className="text-cyan-500 hover:text-white   focus:outline-none focus:text-cyan-200 disabled:text-cyan-300 py-1 px-3
                   hover:bg-[#ff9800] rounded-lg text-md border border-[#ff9800] shadow-lg hover:underline mr-2"
                   >
@@ -101,6 +98,11 @@ const ChallengesPage = () => {
                   <Link to="#" className="text-[#ff9800] hover:underline">
                     Terminate
                   </Link>
+                  {/* <button onClick={() => {
+                    deleteChallengeHere(challenge._id)
+                  }} className="text-[#ff9800] hover:underline">
+                    Delete
+                  </button> */}
                 </td>
               </tr>
             ))}

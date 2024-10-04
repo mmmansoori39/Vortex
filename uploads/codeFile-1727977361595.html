@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher Decoder</title>
+</head>
+<body>
+    <h1>Caesar Cipher Decoder</h1>
+    <p>The encoded message is: <code id="cipher">Khoor, Zruog!</code></p>
+    <p>What is the original message?</p>
+    
+    <form id="cipherForm">
+        <label for="guess">Your Guess:</label>
+        <input type="text" id="guess" name="guess" required>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <p id="message"></p>
+    
+    <script>
+        function caesarCipher(str, shift) {
+            return str.replace(/[a-z]/gi, char => {
+                const charCode = char.charCodeAt(0);
+                const base = (charCode >= 65 && charCode <= 90) ? 65 : 97;
+                return String.fromCharCode(((charCode - base - shift + 26) % 26) + base);
+            });
+        }
+
+        document.getElementById('cipherForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const guess = document.getElementById('guess').value;
+            const cipher = document.getElementById('cipher').textContent;
+            
+            const decodedMessage = caesarCipher(cipher, 3);  // Known shift of 3
+            
+            if (guess === decodedMessage) {
+                document.getElementById('message').textContent = 'Correct! The original message is: ' + decodedMessage;
+            } else {
+                document.getElementById('message').textContent = 'Incorrect, try again!';
+            }
+        });
+    </script>
+</body>
+</html>

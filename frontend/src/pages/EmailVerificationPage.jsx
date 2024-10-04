@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuthStore } from "../store/authStore";
-import toast from "react-hot-toast";
+import { toast } from "../components/Toast";
 
 const EmailVerificationPage = () => {
 	const [code, setCode] = useState(["", "", "", "", "", ""]);
 	const inputRefs = useRef([]);
 	const navigate = useNavigate();
 
-	const { error, isLoading, verifyEmail } = useAuthStore();
+	const { isLoading, verifyEmail } = useAuthStore();
 
 	const handleChange = (index, value) => {
 		const newCode = [...code];
@@ -47,11 +47,11 @@ const EmailVerificationPage = () => {
 		e.preventDefault();
 		const verificationCode = code.join("");
 		try {
-			await verifyEmail(verificationCode);
+			const response = await verifyEmail(verificationCode);
 			navigate("/");
-			toast.success("Email verified successfully");
+			toast.success(response.message);
 		} catch (error) {
-			console.log(error);
+			toast.error(error)
 		}
 	};
 
@@ -63,16 +63,16 @@ const EmailVerificationPage = () => {
 	}, [code]);
 
 	return (
-		<div className='max-w-md w-full bg-gray-800 bg-opacity-20 backdrop-filter backdrop-blur-md rounded-2xl shadow-xl overflow-hidden'>
-			<div
-				initial={{ opacity: 0, y: -50 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5 }}
-				className='bg-gray-800 bg-opacity-20 backdrop-filter backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md'
-			>
-				<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text'>
+		<div className='min-h-screen flex items-center justify-center bg-[#020d19]'>
+			<div className='max-w-md w-full bg-[#0b1b29] rounded-lg shadow-lg p-8 border border-[#ff9800]'>
+				<motion.h2
+					initial={{ opacity: 0, y: -50 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+					className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#ff9800] to-[#f9b34c] text-transparent bg-clip-text'
+				>
 					Verify Your Email
-				</h2>
+				</motion.h2>
 				<p className='text-center text-gray-300 mb-6'>Enter the 6-digit code sent to your email address.</p>
 
 				<form onSubmit={handleSubmit} className='space-y-6'>
@@ -82,21 +82,20 @@ const EmailVerificationPage = () => {
 								key={index}
 								ref={(el) => (inputRefs.current[index] = el)}
 								type='text'
-								maxLength='6'
+								maxLength='1'
 								value={digit}
 								onChange={(e) => handleChange(index, e.target.value)}
 								onKeyDown={(e) => handleKeyDown(index, e)}
-								className='w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none'
+								className='w-12 h-12 text-center text-2xl font-bold bg-[#141414] text-[#f0f0f0] border-2 border-[#ff9800] rounded-lg focus:border-[#f9b34c] focus:outline-none'
 							/>
 						))}
 					</div>
-					{error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
 					<button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						type='submit'
 						disabled={isLoading || code.some((digit) => !digit)}
-						className='w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50'
+						className='w-full bg-gradient-to-r from-[#ff9800] to-[#f9b34c] text-[#0b1b29] font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-[#f9b34c] focus:outline-none focus:ring-2 focus:ring-[#ff9800] focus:ring-opacity-50 disabled:opacity-50'
 					>
 						{isLoading ? "Verifying..." : "Verify Email"}
 					</button>
@@ -105,4 +104,5 @@ const EmailVerificationPage = () => {
 		</div>
 	);
 };
+
 export default EmailVerificationPage;

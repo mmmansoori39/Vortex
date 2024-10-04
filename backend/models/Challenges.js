@@ -9,4 +9,4 @@ const challengeSchema = new mongoose.Schema({
 
 const Challenge = mongoose.model('Challenge', challengeSchema);
 
-export default Challenge;
+export default Challenge; 

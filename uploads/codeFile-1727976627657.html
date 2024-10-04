@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode the Binary Puzzle</title>
+</head>
+<body>
+    <h1>Decode the Binary Puzzle</h1>
+    <p>The binary string is: <code id="binaryString">01001000 01100101 01101100 01101100 01101111 00101100 00100000 01010111 01101111 01110010 01101100 01100100</code></p>
+    <p>What is the hidden message?</p>
+    
+    <form id="binaryForm">
+        <label for="guess">Your Guess:</label>
+        <input type="text" id="guess" name="guess" required>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <p id="message"></p>
+    
+    <script>
+        function binaryToString(binary) {
+            return binary.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+        }
+
+        document.getElementById('binaryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const guess = document.getElementById('guess').value;
+            const binaryString = document.getElementById('binaryString').textContent;
+            
+            const decodedMessage = binaryToString(binaryString);
+            
+            if (guess === decodedMessage) {
+                document.getElementById('message').textContent = 'Correct! The hidden message is: ' + decodedMessage;
+            } else {
+                document.getElementById('message').textContent = 'Incorrect, try again!';
+            }
+        });
+    </script>
+</body>
+</html>

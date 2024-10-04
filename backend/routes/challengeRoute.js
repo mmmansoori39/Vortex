@@ -4,13 +4,14 @@ import {
   getChallenges,
   getChallengeById,
   updateChallenge,
-  deleteChallenge
+  deleteChallenge,
 } from '../controllers/challengeController.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
 
-router.post('/upload', createChallenge); 
+router.post('/upload' , upload,  createChallenge); 
 router.get('/', getChallenges);
 router.get('/:id', getChallengeById);    
 router.put('/:id', updateChallenge);      
