@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 
 const storage = multer.diskStorage({
-  destination: './uploads', // Ensure this folder exists
+  destination: './uploads',
   filename: function (req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
   },
@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000 }, // Limit file size to 1MB
-}).single('codeFile'); // Single file upload with 'codeFile' field
+  limits: { fileSize: 1000000 },
+}).single('codeFile'); 
 
 export default upload;

@@ -26,10 +26,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser()); 
+// CORS configuration for both local development and production
+const allowedOrigins = ["http://localhost:5173", "https://ciphervortex.site/"]; // Add your custom domain here
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
+
+// Redirect HTTP to HTTPS in production
+if (process.env.NODE_ENV === "production") {
+    app.use((req, res, next) => {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect(`https://${req.headers.host}${req.url}`);
+        }
+        next();
+    });
+}
 
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
