@@ -25,19 +25,22 @@ const __dirname = path.dirname(__filename);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser()); 
-// CORS configuration for both local development and production
-const allowedOrigins = ["http://localhost:5173", "https://ciphervortex.site/"]; // Add your custom domain here
+app.use(cookieParser());
+
+const allowedOrigins = ["http://localhost:5173", "https://ciphervortex.site"];
+
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
+        if (!origin || process.env.NODE_ENV === "development" || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true); // Allow requests without origin (like Postman) or from allowed origins
         } else {
+            console.error(`Blocked by CORS: ${origin}`);
             callback(new Error("Not allowed by CORS"));
         }
     },
     credentials: true
 }));
+
 
 // Redirect HTTP to HTTPS in production
 if (process.env.NODE_ENV === "production") {
@@ -52,19 +55,17 @@ if (process.env.NODE_ENV === "production") {
 // Serve static files from the frontend
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
+// API Routes
 app.use("/api/auth", authRoute);
 app.use("/api/blog", blogRoute);
-app.use("/api/challenge", challengeRoute); 
+app.use("/api/challenge", challengeRoute);
 
-// Fallback for any other routes, serve the frontend
+// Fallback to serve the frontend for any undefined routes
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
-app.get("/", (req, res) => {
-    res.send("Hello MMM 123.....");
-});
-
+// Start the server
 app.listen(PORT, () => {
     connectDb();
     console.log(`Server is running on port ${PORT}`);
