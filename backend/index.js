@@ -1,12 +1,12 @@
-import express from 'express';
+import express from "express";
 import dotenv from "dotenv";
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import bodyParser from "body-parser";
 import path from "path";
-import { fileURLToPath } from 'url'; // Needed to work with import.meta.url
+import { fileURLToPath } from "url"; // Needed to work with import.meta.url
 
-import connectDb from './db/connectDb.js';
+import connectDb from "./db/connectDb.js";
 
 // importing routes
 import authRoute from "./routes/authRoute.js";
@@ -27,32 +27,40 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:5173", "https://ciphervortex.site"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ciphervortex.site",
+  "https://ciphervortex.onrender.com",
+];
 
-app.use(cors({
+app.use(
+  cors({
     origin: function (origin, callback) {
-        if (!origin || process.env.NODE_ENV === "development" || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true); // Allow requests without origin (like Postman) or from allowed origins
-        } else {
-            console.error(`Blocked by CORS: ${origin}`);
-            callback(new Error("Not allowed by CORS"));
-        }
+      if (
+        !origin ||
+        process.env.NODE_ENV === "development" ||
+        allowedOrigins.indexOf(origin) !== -1
+      ) {
+        callback(null, true); // Allow requests without origin (like Postman) or from allowed origins
+      } else {
+        console.error(`Blocked by CORS: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
     },
-    credentials: true
-}));
-
+    credentials: true,
+  })
+);
 
 // Redirect HTTP to HTTPS in production
 if (process.env.NODE_ENV === "production") {
-    app.use((req, res, next) => {
-        if (req.headers['x-forwarded-proto'] !== 'https') {
-            return res.redirect(`https://${req.headers.host}${req.url}`);
-        }
-        next();
-    });
+  app.use((req, res, next) => {
+    if (req.headers["x-forwarded-proto"] !== "https") {
+      return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
 }
 
-// Serve static files from the frontend
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // API Routes
@@ -62,11 +70,11 @@ app.use("/api/challenge", challengeRoute);
 
 // Fallback to serve the frontend for any undefined routes
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 // Start the server
 app.listen(PORT, () => {
-    connectDb();
-    console.log(`Server is running on port ${PORT}`);
+  connectDb();
+  console.log(`Server is running on port ${PORT}`);
 });
