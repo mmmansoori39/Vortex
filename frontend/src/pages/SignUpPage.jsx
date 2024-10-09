@@ -22,7 +22,7 @@ const SignUpPage = () => {
 		try {
 			const responseMsg = await signup(name, userName, email, password);
 			toast.success(responseMsg)
-			navigate("/");
+			navigate("/login");
 		} catch (error) {
 			toast.error(error)
 		}
