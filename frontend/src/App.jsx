@@ -26,9 +26,9 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (!user.isVerified) {
-    return <Navigate to="/verify-email" replace />;
-  }
+  // if (!user.isVerified) {
+  //   return <Navigate to="/verify-email" replace />;
+  // }
 
   return children;
 };
@@ -169,7 +169,7 @@ function App() {
           }
         />
         {/* Catch-all route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       <ToastContainer />
     </div>
