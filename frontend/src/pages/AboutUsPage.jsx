@@ -19,7 +19,6 @@ const AboutUsPage = () => {
           Thank you for being a part of our community!
         </p>
       </div>
-      <ChallengesPagedummy />
     </div>
   );
 };

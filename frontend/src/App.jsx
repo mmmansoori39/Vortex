@@ -61,14 +61,30 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br flex  justify-center relative overflow-hidden">
       <Routes location={location}>
-        <Route path="/about" element={<AboutUsPage />} />
-        <Route path="/contact" element={<ContactUsPage />} />
         <Route
           path="/"
           element={
             <ProtectedRoute>
               <Navbar />
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <AboutUsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <ContactUsPage />
             </ProtectedRoute>
           }
         />
